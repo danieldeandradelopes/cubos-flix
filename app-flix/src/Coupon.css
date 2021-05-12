@@ -1,0 +1,57 @@
+.coupon {
+    background-position: center;
+    background-color: #fff;
+    color: #000;
+    height: 120px;
+    display: grid;
+    grid-template-areas:
+        "ctexto ttexto money"
+        "ccoupon timer money";
+    grid-template-rows: 60px auto;
+    column-gap: 24px;
+    padding-left: 20px;
+    place-items: center;
+}
+
+.coupon h1,
+.coupon h2 {
+    place-self: start;
+    justify-self: start;
+}
+
+.coupon h1 {
+    grid-area: ctexto;
+    font-size: 40px;
+}
+
+.coupon h2 {
+    grid-area: ttexto;
+    font-size: 24px;
+}
+
+.money {
+    grid-area: money;
+    position: relative;
+    bottom: 25px;
+}
+
+.coupon .coupon_txt {
+    grid-area: ccoupon;
+}
+
+.coupon .coupon_timer {
+    grid-area: timer;
+}
+
+.coupon p {
+    margin-left: 15px;
+}
+
+.coupon .coupon_txt,
+.coupon .coupon_timer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    place-self: start;
+    justify-self: start;
+}
