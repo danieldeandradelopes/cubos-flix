@@ -1,0 +1,267 @@
+.App {
+    --text-color: #fff;
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: grid;
+    grid-template-areas:
+        "header header"
+        "main aside";
+    grid-template-columns: 2fr 300px;
+    grid-template-rows: min-content;
+    row-gap: 25px;
+    column-gap: 50px;
+}
+
+header {
+    grid-area: header;
+    background-color: var(--main-blue);
+    height: 105px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.input_control {
+    background-color: var(--main-input);
+    padding: 0 16px;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+}
+
+.input_control:hover {
+    border-color: var(--normal-grey);
+}
+
+.input_control input {
+    all: unset;
+    background-color: transparent;
+    height: 56px;
+    width: 450px;
+}
+
+.input_control button {
+    all: unset;
+    cursor: pointer;
+}
+
+.input_control img {
+    width: 24px;
+    height: 24px;
+}
+
+.fav_control,
+.promo_control,
+.profile_control {
+    display: flex;
+    align-items: space-around;
+    justify-content: center;
+}
+
+header a,
+.profile_control img {
+    padding-left: 10px;
+}
+
+main {
+    grid-area: main;
+    display: flex;
+    flex-direction: column;
+    margin-left: 60px;
+    margin-bottom: 40px;
+}
+
+main h2 {
+    margin-top: 40px;
+}
+
+.top_movies,
+.movies_list,
+.type_movies {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.movie_card {
+    width: 170px;
+    height: 290px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    z-index: 1;
+}
+
+.movie_card .card_bg {
+    position: absolute;
+    z-index: -1;
+    opacity: 0.5;
+    width: 170px;
+    height: 300px;
+}
+
+.movie_card .fav {
+    all: unset;
+    margin-bottom: auto;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.movie_card .card_info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+    padding: 8px;
+}
+
+.movie_card .card_info p {
+    font-size: 16px;
+}
+
+.movie_card .add_bag {
+    all: unset;
+    width: 153px;
+    height: 18px;
+    background-color: var(--normal-purple);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 8px;
+    cursor: pointer;
+}
+
+.movie_card .add_bag:hover {
+    background-color: var(--hover-purple);
+}
+
+.movie_card .card_info .rating {
+    display: flex;
+    justify-content: space-between;
+    color: var(--golden);
+}
+
+.movie_card .card_info .rating img {
+    margin-right: 5px;
+}
+
+.type_movies {
+    width: 100%;
+    margin-bottom: 32px;
+}
+
+.type_movies button {
+    all: unset;
+    width: 150px;
+    height: 38px;
+    background-color: transparent;
+    border: 3px solid var(--normal-grey);
+    color: var(--normal-grey);
+    text-align: center;
+    cursor: pointer;
+}
+
+.type_movies button:hover {
+    border-color: var(--normal-pink-two);
+    color: var(--normal-pink-two);
+}
+
+.type_movies .type_selected {
+    background-color: var(--normal-pink-bg);
+    border-color: var(--normal-pink-two);
+    color: var(--normal-pink-two);
+}
+
+aside {
+    grid-area: aside;
+    margin-right: 60px;
+    margin-bottom: 40px;
+}
+
+.bag {
+    background-color: var(--aside-back);
+    position: fixed;
+    margin-right: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.bag_header {
+    background-color: var(--normal-purple);
+    width: 100%;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bag_item {
+    height: 88px;
+    display: grid;
+    margin-bottom: 20px;
+    grid-template-areas:
+        "img title actions"
+        "img price actions";
+    align-items: center;
+}
+
+.bag_item .item_img {
+    width: 40px;
+    height: 60px;
+    grid-area: img;
+    justify-self: center;
+}
+
+.item_title {
+    grid-area: title;
+    align-self: end;
+}
+
+.item_price {
+    grid-area: price;
+    align-self: start;
+}
+
+.bag_item .actions {
+    grid-area: actions;
+    justify-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 90px;
+}
+
+.bag_item .actions button {
+    all: unset;
+    cursor: pointer;
+}
+
+.aside_input_control {
+    color: var(--normal-grey);
+    padding: 16px;
+}
+
+.aside_input_control input {
+    all: unset;
+    width: 90%;
+    background-color: var(--main-input);
+    padding: 5px 10px;
+}
+
+.confirm_data {
+    all: unset;
+    background-color: var(--normal-pink);
+    width: 240px;
+    height: 56px;
+    color: #fff;
+    text-align: center;
+    margin: 16px;
+}
