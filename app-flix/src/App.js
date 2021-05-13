@@ -14,6 +14,7 @@ function App() {
   const interval = useRef(null);
   const minutes = String(Math.floor(couponCounter / 60)).padStart(2, "0");
   const seconds = String(couponCounter % 60).padStart(2, "0");
+  const [activeCoupon, setacAtiveCoupon] = useState(false);
 
   useEffect(() => {
     if (isCouting) {
@@ -28,6 +29,14 @@ function App() {
       setIsCouting(false);
     }
   }, []);
+
+  function addDiscountCoupon() {
+    if (couponCounter > 0) {
+      setacAtiveCoupon(true);
+      setCouponCounter(0);
+    }
+  }
+
 
   //Filters
   const [categories, setCategories] = useState([]);
@@ -132,6 +141,19 @@ function App() {
     setBag(newArray);
   }
 
+  const bagPrice = activeCoupon ? (finalPrice - finalPrice * 0.1).toFixed(2).toString().replace('.', ',') : finalPrice.toFixed(2).toString().replace('.', ',');
+
+  //Bag Coupon
+
+  function addDiscountCouponByInput(e) {
+    if (e.key !== 'Enter') return;
+
+    if (e.target.value === 'htmlnaoelinguagem') {
+      addDiscountCoupon();
+      e.target.value = '';
+    }
+  }
+
   return (
     <div className="App">
       <header>
@@ -163,7 +185,7 @@ function App() {
         {/* COUPON */}
         {
           couponCounter > 0 ? (
-            <div className="coupon" style={{ backgroundImage: "url('./assets/images/bg-promotion.svg')" }}>
+            <div className="coupon" style={{ backgroundImage: "url('./assets/images/bg-promotion.svg')" }} onClick={addDiscountCoupon}>
               <h1>APROVEITE AGORA</h1>
               <div className="coupon_txt">
                 <img src="./assets/images/coupon-circle-icon.svg" alt="" />
@@ -246,7 +268,7 @@ function App() {
                     <div className="bag_item">
                       <img className="item_img" src={m.backgroundImg} alt="" />
                       <p className='item_title'>{m.title}</p>
-                      <p className='item_price'>R$ {m.price}</p>
+                      <p className='item_price'>R$ {m.price.toFixed(2).toString().replace('.', ',')}</p>
 
                       <div className="actions">
                         <button onClick={() => increasesQuantity(m.id)}><img src="./assets/images/plus-icon.svg" alt="plus-icon" /></button>
@@ -275,21 +297,13 @@ function App() {
 
             <div className="aside_input_control">
               <label>Insira seu cupom</label>
-              <input type="text" placeholder="Cupom de desconto" />
+              <input type="text" placeholder="Cupom de desconto" onKeyPress={(e) => addDiscountCouponByInput(e)} />
             </div>
 
 
-            <button className="confirm_data">
-              {
-                finalPrice === 0 ? "Confirme seus dados" : `Confirme seus dados R$ ${finalPrice.toFixed(2).toString().replace('.', ',')}`
-              }
-
-            </button>
+            <button className="confirm_data">{finalPrice === 0 ? "Confirme seus dados" : `Confirme seus dados R$ ${bagPrice}`}</button>
 
           </div>
-
-          <div className="bag_footer"></div>
-
         </div>
       </aside>
     </div >
