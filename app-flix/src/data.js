@@ -6,7 +6,7 @@ const Movies = [
     title: 'Mortal Kombat',
     backgroundImg: `${BASE_PATH}w8BVC3qrCWCiTHRz4Rft12dtQF0.jpg`,
     isStarred: false,
-    starsCount: 9,
+    starsCount: 4.5,
     price: 7.5,
     categories: [
       'horror', 'action'
