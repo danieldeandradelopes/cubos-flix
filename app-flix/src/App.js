@@ -7,6 +7,51 @@ function App() {
 
   const [movies, setMovies] = useState(Movies);
 
+  //Filters
+  const [categories, setCategories] = useState([]);
+  const [search, setSearch] = useState('');
+  const [movieSearchByName, setMovieSearchByName] = useState("");
+
+
+  function searchMovie(e) {
+    if (e.key !== 'Enter') return;
+    setMovieSearchByName(search);
+  }
+
+  function handleCategories(category) {
+    if (category === "all") {
+      setCategories([]);
+      return;
+    }
+
+    const categoryFound = categories.find(c => c === category);
+
+    if (categoryFound) {
+      setCategories(categories.filter(c => c !== category));
+      return;
+    }
+
+    setCategories([...categories, category]);
+  }
+
+  function filterMovies(movie) {
+    //All (default)
+    if (!movieSearchByName && categories.length === 0) return movie;
+
+    //By movie name & category
+    if (movieSearchByName && categories.length > 0) {
+      if (!categories.some(c => movie.categories.includes(c)) && !movie.title.includes(movieSearchByName)) return;
+      return movie;
+    }
+
+    //Category
+    if (categories.some(c => movie.categories.includes(c))) return movie;
+
+    //Movie name
+    if (movieSearchByName && movie.title.includes(movieSearchByName)) return movie;
+  }
+
+
   return (
     <div className="App">
       <header>
@@ -15,7 +60,7 @@ function App() {
           <input
             type="text"
             placeholder={"Pesquise filmes..."}
-
+            onChange={e => setSearch(e.target.value)} onKeyPress={e => searchMovie(e)}
           />
           <button><img src="./assets/images/search-icon.svg" alt="search" /></button>
         </div>
@@ -41,9 +86,7 @@ function App() {
             movies.slice(0, 5).map(m => {
               return <div className="movie_card">
                 <img className="card_bg" src={m.backgroundImg} alt="" />
-
                 <button className='fav '><img src="./assets/images/star.svg" alt="" /></button>
-
                 <div className="card_info">
                   <p>{m.title}</p>
                   <div className='rating'><img src="./assets/images/golden-star.svg" alt="" /> {m.starsCount}</div>
@@ -57,14 +100,15 @@ function App() {
 
         <h2>Filmes</h2>
         <div className='type_movies'>
-          <button className='type_selected' >Todos</button>
-          <button >Ação</button>
-          <button >Romance</button>
-          <button >Ficção ciêntifica</button>
-          <button >Terror</button>
+          <button className={(categories.length === 0 ? 'type_selected' : "")} onClick={() => handleCategories("all")} >Todos</button>
+          <button className={(categories.includes("action") ? 'type_selected' : "")} onClick={() => handleCategories("action")} >Ação</button>
+          <button className={(categories.includes("romance") ? 'type_selected' : "")} onClick={() => handleCategories("romance")} >Romance</button>
+          <button className={(categories.includes("science fiction") ? 'type_selected' : "")} onClick={() => handleCategories("science fiction")} >Ficção ciêntifica</button>
+          <button className={(categories.includes("horror") ? 'type_selected' : "")} onClick={() => handleCategories("horror")} >Terror</button>
         </div>
+
         <div className="movies_list">
-          {movies.map(m => {
+          {movies.filter(filterMovies).map(m => {
             return <div className="movie_card">
               <img className="card_bg" src={m.backgroundImg} alt="" />
               <button className='fav '><img src="./assets/images/star.svg" alt="" /></button>
@@ -75,7 +119,6 @@ function App() {
               </div>
 
               <button className='add_bag'><span>Sacola</span> <span>R${m.price}</span></button>
-              <p>{m.categories}</p>
             </div>
           })}
         </div>
