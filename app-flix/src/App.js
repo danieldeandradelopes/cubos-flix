@@ -1,17 +1,36 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import './App.css';
 import Movies from './data';
-import Coupon from './Coupon'
 
 function App() {
 
   const [movies, setMovies] = useState(Movies);
 
+  //Coupon
+  const [couponCounter, setCouponCounter] = useState(300);
+  const [isCouting, setIsCouting] = useState(true);
+  const interval = useRef(null);
+  const minutes = String(Math.floor(couponCounter / 60)).padStart(2, "0");
+  const seconds = String(couponCounter % 60).padStart(2, "0");
+
+  useEffect(() => {
+    if (isCouting) {
+      interval.current = setInterval(() => {
+        setCouponCounter(prev => prev - 1);
+      }, 1000);
+    }
+
+    return () => {
+      clearInterval(interval.current);
+      interval.current = null;
+      setIsCouting(false);
+    }
+  }, []);
+
   //Filters
   const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState('');
   const [movieSearchByName, setMovieSearchByName] = useState("");
-
 
   function searchMovie(e) {
     if (e.key !== 'Enter') return;
@@ -79,7 +98,29 @@ function App() {
       </header>
 
       <main>
-        <Coupon />
+
+        {/* COUPON */}
+        {
+          couponCounter > 0 ? (
+            <div className="coupon" style={{ backgroundImage: "url('./assets/images/bg-promotion.svg')" }}>
+              <h1>APROVEITE AGORA</h1>
+              <div className="coupon_txt">
+                <img src="./assets/images/coupon-circle-icon.svg" alt="" />
+                <p>CUPOM: HTMLNAOELINGUAGEM</p>
+              </div>
+
+              <h2>FINALIZA EM:</h2>
+              <div className="coupon_timer">
+                <img src="./assets/images/time-icon.svg" alt="" />
+                <p>00:{minutes}:{seconds}</p>
+              </div>
+
+              <img className="money" src="./assets/images/money.png" alt="money" />
+            </div>
+          ) : ""
+        }
+
+
         <h2>Top filmes</h2>
         <div className="top_movies">
           {
