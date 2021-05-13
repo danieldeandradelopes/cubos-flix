@@ -241,6 +241,7 @@ aside {
     grid-area: aside;
     margin-right: 60px;
     margin-bottom: 40px;
+    min-height: 100vh;
 }
 
 .bag {

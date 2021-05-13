@@ -1,10 +1,12 @@
+/* eslint-disable jsx-a11y/alt-text */
+
 import { useState, useRef, useEffect } from 'react';
 import './App.css';
 import Movies from './data';
 
 function App() {
 
-  const [movies, setMovies] = useState(Movies);
+  const [movies] = useState(Movies);
 
   //Coupon
   const [couponCounter, setCouponCounter] = useState(300);
@@ -71,6 +73,65 @@ function App() {
   }
 
 
+  //Bag
+  const [bag, setBag] = useState([]);
+  const [finalPrice, setFinalPrice] = useState(0);
+
+  function addToBag(movie) {
+    const newArray = [...bag];
+    const bagMovies = newArray.find(m => m.id === Number(movie.id));
+
+    if (bagMovies) {
+      bagMovies.amount++;
+      setBag(newArray);
+      const newPrice = bagMovies.price + finalPrice;
+
+      setFinalPrice(newPrice);
+      return;
+    }
+
+    const newMovie = {
+      id: movie.id,
+      title: movie.title,
+      backgroundImg: movie.backgroundImg,
+      price: movie.price,
+      amount: 1,
+    }
+
+    newArray.push(newMovie);
+
+    setBag(newArray);
+    const newPrice = movie.price + finalPrice;
+    setFinalPrice(newPrice);
+  }
+
+  function increasesQuantity(movieId) {
+    const newArray = [...bag];
+    const bagMovies = newArray.find(m => m.id === movieId);
+
+    bagMovies.amount++;
+    setBag(newArray);
+    const newPrice = bagMovies.price + finalPrice;
+    setFinalPrice(newPrice);
+  }
+
+  function decreasesQuantity(movieId) {
+    const newArray = [...bag];
+    const bagMovies = newArray.find(m => m.id === movieId);
+    const newPrice = finalPrice - bagMovies.price;
+    setFinalPrice(newPrice);
+
+    bagMovies.amount--;
+    if (bagMovies.amount === 0) {
+      setBag(
+        newArray.filter(m => m.id !== movieId),
+      );
+      return;
+    }
+
+    setBag(newArray);
+  }
+
   return (
     <div className="App">
       <header>
@@ -133,7 +194,7 @@ function App() {
                   <div className='rating'><img src="./assets/images/golden-star.svg" alt="" /> {m.starsCount}</div>
                 </div>
 
-                <button className='add_bag'><span>Sacola</span> <span>R${m.price}</span></button>
+                <button onClick={() => addToBag(m)} className='add_bag'><span>Sacola</span> <span>R${m.price.toFixed(2).toString().replace('.', ',')}</span></button>
               </div>
             })
           }
@@ -159,7 +220,7 @@ function App() {
                 <div className='rating'><img src="./assets/images/golden-star.svg" alt="" /> {m.starsCount}</div>
               </div>
 
-              <button className='add_bag'><span>Sacola</span> <span>R${m.price}</span></button>
+              <button className='add_bag'><span>Sacola</span> <span>R${m.price.toFixed(2).toString().replace('.', ',')}</span></button>
             </div>
           })}
         </div>
@@ -167,6 +228,8 @@ function App() {
       </main>
 
       <aside>
+
+        {/* BAG */}
         <div className="bag">
 
           <div className="bag_header">
@@ -176,29 +239,39 @@ function App() {
 
           <div className="bag_content">
 
-            <div className="bag_item">
-              <img className="item_img" src="./assets/images/joker.png" alt="" />
-              <p className='item_title'>Joker</p>
-              <p className='item_price'>R$ 2,49</p>
+            {
+              bag.length > 0 ?
+                (
+                  bag.map(m => (
+                    <div className="bag_item">
+                      <img className="item_img" src={m.backgroundImg} alt="" />
+                      <p className='item_title'>{m.title}</p>
+                      <p className='item_price'>R$ {m.price}</p>
 
-              <div className="actions">
-                <button><img src="./assets/images/plus-icon.svg" alt="plus-icon" /></button>
-                <span>1</span>
-                <button><img src="./assets/images/trash-icon.svg" alt="trash-icon" /></button>
-              </div>
-            </div>
+                      <div className="actions">
+                        <button onClick={() => increasesQuantity(m.id)}><img src="./assets/images/plus-icon.svg" alt="plus-icon" /></button>
+                        <span>{m.amount}</span>
+                        <button onClick={() => decreasesQuantity(m.id)}><img
+                          src={
+                            m.amount > 1 ?
+                              "./assets/images/minus-icon.svg"
+                              :
+                              "./assets/images/trash-icon.svg"
+                          }
+                        /></button>
+                      </div>
+                    </div>
+                  ))
+                )
+                :
+                (
+                  <div>
+                    <h2>Sua sacola está vazia</h2>
+                    <h3>Adicione filmes agora</h3>
+                  </div>
+                )
 
-            <div className="bag_item">
-              <img className="item_img" src="./assets/images/joker.png" alt="" />
-              <p className='item_title'>Joker</p>
-              <p className='item_price'>R$ 2,49</p>
-
-              <div className="actions">
-                <button><img src="./assets/images/plus-icon.svg" alt="plus-icon" /></button>
-                <span>1</span>
-                <button><img src="./assets/images/minus-icon.svg" alt="minus-icon" /></button>
-              </div>
-            </div>
+            }
 
             <div className="aside_input_control">
               <label>Insira seu cupom</label>
@@ -206,7 +279,12 @@ function App() {
             </div>
 
 
-            <button className="confirm_data">Confirme seus dados R$04,98</button>
+            <button className="confirm_data">
+              {
+                finalPrice === 0 ? "Confirme seus dados" : `Confirme seus dados R$ ${finalPrice.toFixed(2).toString().replace('.', ',')}`
+              }
+
+            </button>
 
           </div>
 
