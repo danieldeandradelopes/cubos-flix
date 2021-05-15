@@ -1,0 +1,50 @@
+header {
+    grid-area: header;
+    background-color: var(--main-blue);
+    height: 105px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.input_control {
+    background-color: var(--main-input);
+    padding: 0 16px;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+}
+
+.input_control:hover {
+    border-color: var(--normal-grey);
+}
+
+.input_control input {
+    all: unset;
+    background-color: transparent;
+    height: 56px;
+    width: 450px;
+}
+
+.input_control button {
+    all: unset;
+    cursor: pointer;
+}
+
+.input_control img {
+    width: 24px;
+    height: 24px;
+}
+
+.fav_control,
+.promo_control,
+.profile_control {
+    display: flex;
+    align-items: space-around;
+    justify-content: center;
+}
+
+header a,
+.profile_control img {
+    padding-left: 10px;
+}

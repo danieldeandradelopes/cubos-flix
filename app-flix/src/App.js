@@ -4,6 +4,11 @@ import { useState, useRef, useEffect } from 'react';
 import './App.css';
 import Movies from './data';
 
+//Components
+import Movie from './components/Movie/Movie';
+import Coupon from './components/Coupon/Coupon';
+import Header from './components/Header/Header';
+
 function App() {
 
   const [movies] = useState(Movies);
@@ -28,6 +33,7 @@ function App() {
       interval.current = null;
       setIsCouting(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function addDiscountCoupon() {
@@ -156,70 +162,22 @@ function App() {
 
   return (
     <div className="App">
-      <header>
-        <img src="./assets/images/logo.svg" alt="logo" />
-        <div className='input_control'>
-          <input
-            type="text"
-            placeholder={"Pesquise filmes..."}
-            onChange={e => setSearch(e.target.value)} onKeyPress={e => searchMovie(e)}
-          />
-          <button><img src="./assets/images/search-icon.svg" alt="search" /></button>
-        </div>
-        <div className='fav_control'>
-          <img src="./assets/images/bookmark-icon.svg" alt="bookmark" />
-          <a href="#fav">Favoritos</a>
-        </div>
-        <div className='promo_control'>
-          <img src="./assets/images/promotion-icon.svg" alt="promotions" />
-          <a href="#promo">Promoções</a>
-        </div>
-        <div className='profile_control'>
-          <p>Bem vindo GEspinosa7</p>
-          <img src="./assets/images/logo.svg" alt="logo" />
-        </div>
-      </header>
+      <Header setSearch={setSearch} searchMovie={searchMovie} />
 
       <main>
-
-        {/* COUPON */}
         {
           couponCounter > 0 ? (
-            <div className="coupon" style={{ backgroundImage: "url('./assets/images/bg-promotion.svg')" }} onClick={addDiscountCoupon}>
-              <h1>APROVEITE AGORA</h1>
-              <div className="coupon_txt">
-                <img src="./assets/images/coupon-circle-icon.svg" alt="" />
-                <p>CUPOM: HTMLNAOELINGUAGEM</p>
-              </div>
-
-              <h2>FINALIZA EM:</h2>
-              <div className="coupon_timer">
-                <img src="./assets/images/time-icon.svg" alt="" />
-                <p>00:{minutes}:{seconds}</p>
-              </div>
-
-              <img className="money" src="./assets/images/money.png" alt="money" />
-            </div>
+            <Coupon
+              addDiscountCoupon={addDiscountCoupon}
+              minutes={minutes}
+              seconds={seconds}
+            />
           ) : ""
         }
 
-
         <h2>Top filmes</h2>
         <div className="top_movies">
-          {
-            movies.slice(0, 5).map(m => {
-              return <div className="movie_card">
-                <img className="card_bg" src={m.backgroundImg} alt="" />
-                <button className='fav '><img src="./assets/images/star.svg" alt="" /></button>
-                <div className="card_info">
-                  <p>{m.title}</p>
-                  <div className='rating'><img src="./assets/images/golden-star.svg" alt="" /> {m.starsCount}</div>
-                </div>
-
-                <button onClick={() => addToBag(m)} className='add_bag'><span>Sacola</span> <span>R${m.price.toFixed(2).toString().replace('.', ',')}</span></button>
-              </div>
-            })
-          }
+          {movies.slice(0, 5).map(m => <Movie movie={m} addToBag={addToBag} />)}
         </div>
 
         <h2>Filmes</h2>
@@ -232,26 +190,13 @@ function App() {
         </div>
 
         <div className="movies_list">
-          {movies.filter(filterMovies).map(m => {
-            return <div className="movie_card">
-              <img className="card_bg" src={m.backgroundImg} alt="" />
-              <button className='fav '><img src="./assets/images/star.svg" alt="" /></button>
-
-              <div className="card_info">
-                <p>{m.title}</p>
-                <div className='rating'><img src="./assets/images/golden-star.svg" alt="" /> {m.starsCount}</div>
-              </div>
-
-              <button className='add_bag'><span>Sacola</span> <span>R${m.price.toFixed(2).toString().replace('.', ',')}</span></button>
-            </div>
-          })}
+          {movies.filter(filterMovies).map(m => <Movie movie={m} addToBag={addToBag} />)}
         </div>
 
       </main>
 
       <aside>
 
-        {/* BAG */}
         <div className="bag">
 
           <div className="bag_header">
@@ -259,51 +204,57 @@ function App() {
             <h3> Sacola</h3>
           </div>
 
-          <div className="bag_content">
+          {
+            bag.length > 0 ?
+              (
+                <div className="bag_content">
+                  {
+                    bag.map(m => (
+                      <div className="bag_item">
+                        <img className="item_img" src={m.backgroundImg} alt="" />
+                        <p className='item_title'>{m.title}</p>
+                        <p className='item_price'>R$ {m.price.toFixed(2).toString().replace('.', ',')}</p>
 
-            {
-              bag.length > 0 ?
-                (
-                  bag.map(m => (
-                    <div className="bag_item">
-                      <img className="item_img" src={m.backgroundImg} alt="" />
-                      <p className='item_title'>{m.title}</p>
-                      <p className='item_price'>R$ {m.price.toFixed(2).toString().replace('.', ',')}</p>
-
-                      <div className="actions">
-                        <button onClick={() => increasesQuantity(m.id)}><img src="./assets/images/plus-icon.svg" alt="plus-icon" /></button>
-                        <span>{m.amount}</span>
-                        <button onClick={() => decreasesQuantity(m.id)}><img
-                          src={
-                            m.amount > 1 ?
-                              "./assets/images/minus-icon.svg"
-                              :
-                              "./assets/images/trash-icon.svg"
-                          }
-                        /></button>
+                        <div className="actions">
+                          <button onClick={() => increasesQuantity(m.id)}><img src="./assets/images/plus-icon.svg" alt="plus-icon" /></button>
+                          <span>{m.amount}</span>
+                          <button onClick={() => decreasesQuantity(m.id)}><img
+                            src={
+                              m.amount > 1 ?
+                                "./assets/images/minus-icon.svg"
+                                :
+                                "./assets/images/trash-icon.svg"
+                            }
+                          /></button>
+                        </div>
                       </div>
-                    </div>
-                  ))
-                )
-                :
-                (
-                  <div>
-                    <h2>Sua sacola está vazia</h2>
-                    <h3>Adicione filmes agora</h3>
-                  </div>
-                )
+                    ))
+                  }
+                </div>
+              )
+              :
+              (
+                <div className="no_content">
+                  <h2>Sua sacola está vazia</h2>
+                  <h3>Adicione filmes agora</h3>
+                  <img src="./assets/images/person-illustration.svg" style={{ "width": "100px" }} />
+                </div>
+              )
+          }
 
-            }
+          {
+            activeCoupon ?
+              <p>Cupom aplicado</p>
+              :
+              <div className="aside_input_control">
+                <label>Insira seu cupom</label>
+                <input type="text" placeholder="Cupom de desconto" onKeyPress={(e) => addDiscountCouponByInput(e)} />
+              </div>
+          }
 
-            <div className="aside_input_control">
-              <label>Insira seu cupom</label>
-              <input type="text" placeholder="Cupom de desconto" onKeyPress={(e) => addDiscountCouponByInput(e)} />
-            </div>
 
+          <button className="confirm_data">{finalPrice === 0 ? "Confirme seus dados" : `Confirme seus dados R$ ${bagPrice}`}</button>
 
-            <button className="confirm_data">{finalPrice === 0 ? "Confirme seus dados" : `Confirme seus dados R$ ${bagPrice}`}</button>
-
-          </div>
         </div>
       </aside>
     </div >
